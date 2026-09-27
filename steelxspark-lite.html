@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SteelXSpark Lite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#15181a;--panel:#1e2225;--panel2:#262b2f;--line:#33393d;--ink:#eae6dd;--ink-dim:#9aa0a3;
+--ember:#e8622c;--ember-dim:#e8622c33;--steel:#5f92a8;--ok:#4caf6b;--warn:#e0b03d;--bad:#d9564a;}
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-serif;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+.mono{font-family:'JetBrains Mono',monospace;}
+header{padding:26px clamp(16px,4vw,48px) 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;}
+header h1{margin:0;font-size:clamp(20px,3vw,27px);font-weight:700;}
+header h1 span{color:var(--ember);}
+header p{margin:4px 0 0;color:var(--ink-dim);font-size:13px;max-width:480px;}
+.adminBtn{background:var(--panel);border:1px solid var(--line);color:var(--ink-dim);padding:8px 14px;border-radius:5px;font-size:12px;cursor:pointer;font-family:'Space Grotesk';}
+.wrap{max-width:760px;margin:0 auto;padding:24px 18px 70px;}
+.step{font-size:11px;color:var(--ember);text-transform:uppercase;letter-spacing:.6px;margin:0 0 6px;}
+fieldset{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:16px 18px;margin-bottom:14px;}
+legend{padding:0 6px;font-size:13px;font-weight:600;color:var(--ink);}
+.q{font-size:13px;color:var(--ink-dim);margin:0 0 8px;}
+input[type=number],select{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:5px;padding:8px 9px;font-family:'JetBrains Mono',monospace;font-size:13.5px;width:100%;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.seg{display:flex;gap:6px;}
+.seg button{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--ink-dim);padding:9px 4px;border-radius:5px;font-size:12.5px;cursor:pointer;font-family:'Space Grotesk';font-weight:600;}
+.seg button.active{background:var(--ember-dim);border-color:var(--ember);color:var(--ink);}
+input[type=range]{width:100%;accent-color:var(--ember);}
+.rangeval{font-family:'JetBrains Mono',monospace;color:var(--ember);font-weight:700;float:right;}
+.runbtn{width:100%;background:var(--ember);color:#1a1310;border:none;padding:15px;border-radius:6px;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px;font-family:'Space Grotesk';}
+.runbtn:hover{background:#f37142;}
+#results{margin-top:26px;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;}
+.kpi .l{font-size:10.5px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.4px;}
+.kpi .v{font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;margin-top:3px;}
+.kpi .v.ember{color:var(--ember);} .kpi .v.ok{color:var(--ok);}
+.sec-h{font-size:12.5px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.5px;margin:22px 0 9px;border-bottom:1px solid var(--line);padding-bottom:6px;}
+.card{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:13px;margin-bottom:7px;}
+.flag{width:11px;height:11px;border-radius:50%;}
+.flag.green{background:var(--ok);} .flag.yellow{background:var(--warn);} .flag.red{background:var(--bad);}
+.card .name{font-weight:600;} .card .d{color:var(--ink-dim);font-size:11.5px;}
+.card .num{font-family:'JetBrains Mono',monospace;color:var(--steel);text-align:right;font-size:12.5px;}
+.rank{list-style:none;margin:0;padding:0;counter-reset:r;}
+.rank li{counter-increment:r;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px 12px 44px;position:relative;margin-bottom:8px;}
+.rank li::before{content:counter(r);position:absolute;left:14px;top:12px;color:var(--ember);font-family:'JetBrains Mono';font-weight:700;}
+.rank .t{font-weight:600;font-size:13.5px;}
+.rank .s{font-size:12px;color:var(--ink-dim);margin-top:2px;}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;margin-left:8px;font-weight:600;}
+.tag.green{background:#4caf6b22;color:var(--ok);} .tag.yellow{background:#e0b03d22;color:var(--warn);} .tag.red{background:#d9564a22;color:var(--bad);}
+.note{font-size:11.5px;color:var(--ink-dim);margin-top:18px;border-top:1px solid var(--line);padding-top:10px;line-height:1.5;}
+#admin{display:none;position:fixed;inset:0;background:#0000008c;z-index:10;padding:30px 14px;overflow:auto;}
+#admin.show{display:block;}
+.adminBox{max-width:640px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px 22px 26px;}
+.adminBox h2{margin:0 0 4px;font-size:18px;} .adminBox p{color:var(--ink-dim);font-size:12.5px;margin:0 0 16px;}
+.arow{display:grid;grid-template-columns:1fr 90px;gap:8px;align-items:center;margin-bottom:7px;font-size:12.5px;color:var(--ink-dim);}
+.arow input{padding:5px 7px;font-size:12px;}
+.aclose{background:var(--ember);border:none;color:#1a1310;padding:10px 18px;border-radius:6px;font-weight:700;cursor:pointer;margin-top:10px;font-family:'Space Grotesk';}
+.ahead{font-size:11px;color:var(--ember);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 6px;}
+.placeholder{color:var(--ink-dim);font-size:13px;text-align:center;padding:30px 0;}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Steel<span>X</span>Spark <span style="color:var(--steel)">Lite</span></h1>
+  <p>A 5-minute screening tool: a handful of plant inputs, stored defaults do the rest — practical CO₂ actions, indicative cost, and payback.</p></div>
+  <button class="adminBtn" onclick="document.getElementById('admin').classList.add('show')">⚙ Admin settings</button>
+</header>
+<div class="wrap">
+
+<fieldset><legend>1 · Plant route</legend>
+  <div class="seg" id="routeSeg">
+    <button data-r="BFBOF" class="active">BF–BOF</button><button data-r="EAF">EAF</button><button data-r="DRIEAF">DRI–EAF</button><button data-r="Other">Other</button>
+  </div>
+</fieldset>
+
+<fieldset><legend>2 · Production &amp; baseline</legend>
+  <div class="grid2">
+    <div><p class="q">Annual steel production (t/yr)</p><input id="P" type="number" value="2000000"></div>
+    <div><p class="q">Current carbon intensity (tCO₂/t steel)</p><input id="CI" type="number" step="0.01" value="2.10"></div>
+  </div>
+</fieldset>
+
+<fieldset><legend>3 · Scrap</legend>
+  <div class="grid2">
+    <div><p class="q">Current scrap %</p><input id="Sbase" type="number" value="10"></div>
+    <div><p class="q">Additional scrap realistically sourceable (kt/yr)</p><input id="Aadd" type="number" value="150"></div>
+  </div>
+</fieldset>
+
+<fieldset><legend>4 · Renewable electricity</legend>
+  <p class="q">How much of your electricity can realistically shift to renewables? <span class="rangeval" id="reV">30%</span></p>
+  <input id="RE" type="range" min="0" max="90" value="30">
+</fieldset>
+
+<fieldset><legend>5 · Energy efficiency opportunity</legend>
+  <p class="q">VFDs, pumps, fans, compressors, motors, idle-running, combustion tuning — overall level</p>
+  <div class="seg" id="effSeg"><button data-v="0">None</button><button data-v="1" class="active">Low</button><button data-v="2">Medium</button><button data-v="3">High</button></div>
+</fieldset>
+
+<fieldset><legend>6 · Waste heat recovery potential</legend>
+  <div class="seg" id="whrSeg"><button data-v="0" class="active">None</button><button data-v="1">Low</button><button data-v="2">Medium</button><button data-v="3">High</button></div>
+</fieldset>
+
+<fieldset><legend>7 · Fuel switching / hydrogen potential</legend>
+  <div class="seg" id="fuelSeg"><button data-v="0" class="active">None</button><button data-v="1">Low</button><button data-v="2">Medium</button><button data-v="3">High</button></div>
+</fieldset>
+
+<button class="runbtn" onclick="calculate()">Calculate decarbonization plan</button>
+
+<div id="results"><p class="placeholder">Results will appear here after calculation.</p></div>
+</div>
+
+<div id="admin"><div class="adminBox">
+  <h2>Administrator settings</h2>
+  <p>Stored defaults used by the calculation engine — edit and re-run. Never shown to the plant operator.</p>
+  <div class="ahead">Emission factors</div>
+  <div class="arow"><span>EF virgin iron feed (tCO₂/t)</span><input id="a_EFvirgin" type="number" step="0.01" value="2.20"></div>
+  <div class="arow"><span>EF scrap (tCO₂/t)</span><input id="a_EFscrap" type="number" step="0.01" value="0.30"></div>
+  <div class="arow"><span>EF grid electricity (tCO₂/MWh)</span><input id="a_EFgrid" type="number" step="0.01" value="0.82"></div>
+  <div class="arow"><span>EF renewable electricity (tCO₂/MWh)</span><input id="a_EFre" type="number" step="0.01" value="0.02"></div>
+  <div class="ahead">Plant / route factors</div>
+  <div class="arow"><span>Max scrap fraction S_max (%)</span><input id="a_Smax" type="number" value="30"></div>
+  <div class="arow"><span>Electricity intensity (MWh/t steel)</span><input id="a_elecInt" type="number" step="0.01" value="0.55"></div>
+  <div class="arow"><span>Max renewable availability (%)</span><input id="a_REmax" type="number" value="80"></div>
+  <div class="arow"><span>Fuel-emission share of baseline CO₂ (%)</span><input id="a_fuelShare" type="number" value="20"></div>
+  <div class="ahead">Efficiency levels (% electricity saved)</div>
+  <div class="arow"><span>Low</span><input id="a_effL" type="number" value="2"></div>
+  <div class="arow"><span>Medium</span><input id="a_effM" type="number" value="5"></div>
+  <div class="arow"><span>High</span><input id="a_effH" type="number" value="8"></div>
+  <div class="ahead">WHR levels (% of baseline CO₂)</div>
+  <div class="arow"><span>Low</span><input id="a_whrL" type="number" value="1"></div>
+  <div class="arow"><span>Medium</span><input id="a_whrM" type="number" value="3"></div>
+  <div class="arow"><span>High</span><input id="a_whrH" type="number" value="5"></div>
+  <div class="ahead">Fuel-switch levels (substitution %) &amp; alt fuel</div>
+  <div class="arow"><span>Low / Medium / High</span><input id="a_fsL" type="number" value="5"></div>
+  <div class="arow"><span>&nbsp;</span><input id="a_fsM" type="number" value="15"></div>
+  <div class="arow"><span>&nbsp;</span><input id="a_fsH" type="number" value="30"></div>
+  <div class="arow"><span>EF fossil fuel (tCO₂/GJ)</span><input id="a_EFfossil" type="number" step="0.001" value="0.090"></div>
+  <div class="arow"><span>EF alternative fuel (tCO₂/GJ)</span><input id="a_EFalt" type="number" step="0.001" value="0.015"></div>
+  <div class="ahead">CAPEX benchmarks (₹ crore, indicative)</div>
+  <div class="arow"><span>Scrap handling, per kt/yr</span><input id="a_capScrap" type="number" step="0.01" value="0.05"></div>
+  <div class="arow"><span>Renewable (PPA/rooftop), per % shifted</span><input id="a_capRE" type="number" step="0.01" value="0.15"></div>
+  <div class="arow"><span>Efficiency — Low/Med/High</span><input id="a_capEffL" type="number" value="2"></div>
+  <div class="arow"><span>&nbsp;</span><input id="a_capEffM" type="number" value="5"></div>
+  <div class="arow"><span>&nbsp;</span><input id="a_capEffH" type="number" value="9"></div>
+  <div class="arow"><span>WHR — Low/Med/High</span><input id="a_capWhrL" type="number" value="15"></div>
+  <div class="arow"><span>&nbsp;</span><input id="a_capWhrM" type="number" value="35"></div>
+  <div class="arow"><span>&nbsp;</span><input id="a_capWhrH" type="number" value="60"></div>
+  <div class="arow"><span>Fuel switch — Low/Med/High</span><input id="a_capFsL" type="number" value="20"></div>
+  <div class="arow"><span>&nbsp;</span><input id="a_capFsM" type="number" value="55"></div>
+  <div class="arow"><span>&nbsp;</span><input id="a_capFsH" type="number" value="110"></div>
+  <div class="arow"><span>Indicative saving per tCO₂ avoided (₹)</span><input id="a_savPerT" type="number" value="2500"></div>
+  <div class="ahead">Priority weights (CO₂ / Payback / Feasibility)</div>
+  <div class="arow"><span>w1 CO₂</span><input id="a_w1" type="number" step="0.05" value="0.50"></div>
+  <div class="arow"><span>w2 Payback</span><input id="a_w2" type="number" step="0.05" value="0.30"></div>
+  <div class="arow"><span>w3 Feasibility</span><input id="a_w3" type="number" step="0.05" value="0.20"></div>
+  <button class="aclose" onclick="document.getElementById('admin').classList.remove('show')">Done</button>
+</div></div>
+
+<script>
+const routeDefaults = {
+  BFBOF:{elecInt:0.55, fuelShare:20}, EAF:{elecInt:0.60, fuelShare:8}, DRIEAF:{elecInt:0.75, fuelShare:15}, Other:{elecInt:0.55, fuelShare:18}
+};
+let route='BFBOF', eff=1, whr=0, fuel=0;
+document.querySelectorAll('#routeSeg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#routeSeg button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); route=b.dataset.r;
+  const d=routeDefaults[route]; document.getElementById('a_elecInt').value=d.elecInt; document.getElementById('a_fuelShare').value=d.fuelShare;
+});
+document.getElementById('RE').oninput=e=>document.getElementById('reV').textContent=e.target.value+'%';
+function seg(id,setter){document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); setter(+b.dataset.v); });}
+seg('effSeg', v=>eff=v); seg('whrSeg', v=>whr=v); seg('fuelSeg', v=>fuel=v);
+
+function n(id){return parseFloat(document.getElementById(id).value)||0;}
+const inr=x=>x.toLocaleString('en-IN',{maximumFractionDigits:1});
+const LVL=['None','Low','Medium','High'];
+
+function calculate(){
+  const P=n('P'), CI=n('CI'), Sbase=n('Sbase')/100, Aadd_req=n('Aadd')*1000, REreq=n('RE')/100;
+  const EFvirgin=n('a_EFvirgin'), EFscrap=n('a_EFscrap'), EFgrid=n('a_EFgrid'), EFre=n('a_EFre');
+  const Smax=n('a_Smax')/100, elecInt=n('a_elecInt'), REmax=n('a_REmax')/100, fuelShare=n('a_fuelShare')/100;
+  const effPct=[0,n('a_effL'),n('a_effM'),n('a_effH')][eff]/100;
+  const whrPct=[0,n('a_whrL'),n('a_whrM'),n('a_whrH')][whr]/100;
+  const fsPct=[0,n('a_fsL'),n('a_fsM'),n('a_fsH')][fuel]/100;
+  const EFfossil=n('a_EFfossil'), EFalt=n('a_EFalt');
+  const savPerT=n('a_savPerT'), w1=n('a_w1'), w2=n('a_w2'), w3=n('a_w3');
+
+  const CO2_base = P*CI;
+  const Etotal = elecInt*P; // MWh/yr
+
+  // A. Scrap
+  const Amax = Math.max(0,(Smax-Sbase))*P;
+  const Aadd = Math.min(Aadd_req, Amax);
+  const Snew = Sbase + Aadd/P;
+  const dCO2_scrap = P*(Snew-Sbase)*(EFvirgin-EFscrap);
+  const scrapCapped = Aadd < Aadd_req-1;
+  const scrapFlag = Aadd<=0? 'red' : scrapCapped? 'yellow':'green';
+
+  // B. Renewables
+  const RE = Math.min(REreq, REmax);
+  const dCO2_RE = Etotal*RE*(EFgrid-EFre);
+  const reFlag = RE<=0? 'red' : (RE<REreq-0.001)? 'yellow':'green';
+
+  // C. Efficiency (on remaining, post-RE blended electricity)
+  const EFblend = (1-RE)*EFgrid + RE*EFre;
+  const dCO2_eff = Etotal*effPct*EFblend;
+  const effFlag = eff===0? 'red' : eff===3? 'yellow':'green';
+
+  // D. WHR (fraction of total baseline CO2)
+  const dCO2_whr = CO2_base*whrPct;
+  const whrFlag = whr===0? 'red' : whr===1? 'green':'yellow';
+
+  // E. Fuel switching — remaining fuel-attributable emissions after WHR
+  const CO2_fuel_base = CO2_base*fuelShare;
+  const CO2_fuel_remaining = Math.max(0, CO2_fuel_base - dCO2_whr);
+  const dCO2_fuel = CO2_fuel_remaining*fsPct*(1-EFalt/EFfossil);
+  const fuelFlag = fuel===0? 'red' : fuel===3? 'red' : 'yellow';
+
+  const total = dCO2_scrap+dCO2_RE+dCO2_eff+dCO2_whr+dCO2_fuel;
+  const CO2_new = CO2_base-total;
+  const CI_new = CO2_new/P;
+  const redPct = 100*total/CO2_base;
+
+  // CAPEX / payback per intervention
+  const capScrap = (Aadd/1000)*n('a_capScrap');
+  const capRE = (RE*100)*n('a_capRE');
+  const capEff = [0,n('a_capEffL'),n('a_capEffM'),n('a_capEffH')][eff];
+  const capWhr = [0,n('a_capWhrL'),n('a_capWhrM'),n('a_capWhrH')][whr];
+  const capFuel = [0,n('a_capFsL'),n('a_capFsM'),n('a_capFsH')][fuel];
+  const CAPEXtotal = capScrap+capRE+capEff+capWhr+capFuel;
+  const annualSaving = total*savPerT/1e7;
+  const payback = annualSaving>0? CAPEXtotal/annualSaving : Infinity;
+
+  const items=[
+    {key:'scrap', name:'Increase scrap utilization', detail:`${(Sbase*100).toFixed(0)}% → ${(Snew*100).toFixed(1)}%  ·  +${inr(Aadd/1000)} kt/yr`, co2:dCO2_scrap, capex:capScrap, flag:scrapFlag},
+    {key:'re', name:'Increase renewable electricity', detail:`+${(RE*100).toFixed(0)}% of consumption`, co2:dCO2_RE, capex:capRE, flag:reFlag},
+    {key:'eff', name:'Energy-efficiency measures', detail:`Level: ${LVL[eff]}`, co2:dCO2_eff, capex:capEff, flag:effFlag},
+    {key:'whr', name:'Waste heat recovery', detail:`Level: ${LVL[whr]}`, co2:dCO2_whr, capex:capWhr, flag:whrFlag},
+    {key:'fuel', name:'Fuel switching / hydrogen', detail:`Level: ${LVL[fuel]}  ·  ${(fsPct*100).toFixed(0)}% substitution`, co2:dCO2_fuel, capex:capFuel, flag:fuelFlag},
+  ];
+
+  const maxCO2=Math.max(...items.map(i=>i.co2),1);
+  const paybacks=items.map(i=>{const s=i.co2*savPerT/1e7; return s>0? i.capex/s:99;});
+  const maxPay=Math.max(...paybacks,1);
+  const featScore={green:1,yellow:0.5,red:0};
+  items.forEach((it,idx)=>{
+    const co2s=it.co2/maxCO2, pays=1-(paybacks[idx]/maxPay), fs=featScore[it.flag];
+    it.score = w1*co2s + w2*pays + w3*fs; it.payback=paybacks[idx];
+  });
+  const ranked=[...items].sort((a,b)=>b.score-a.score);
+
+  render({P,CI,CO2_base,CO2_new,CI_new,total,redPct,CAPEXtotal,annualSaving,payback,items,ranked});
+}
+
+function render(d){
+  let h=`<div class="sec-h">Baseline</div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">Production</div><div class="v">${(d.P/1e6).toFixed(2)} <span style="font-size:10px;color:var(--ink-dim)">Mt/yr</span></div></div>
+    <div class="kpi"><div class="l">Carbon intensity</div><div class="v">${d.CI.toFixed(2)}</div></div>
+    <div class="kpi"><div class="l">Baseline CO₂</div><div class="v">${(d.CO2_base/1e6).toFixed(2)} <span style="font-size:10px;color:var(--ink-dim)">Mt/yr</span></div></div>
+  </div>
+  <div class="sec-h">Results</div>
+  <div class="kpis">
+    <div class="kpi"><div class="l">New CO₂ intensity</div><div class="v ember">${d.CI_new.toFixed(2)}</div></div>
+    <div class="kpi"><div class="l">Total reduction</div><div class="v ok">${d.redPct.toFixed(1)}%</div></div>
+    <div class="kpi"><div class="l">Reduction</div><div class="v">${inr(d.total/1000)} <span style="font-size:10px;color:var(--ink-dim)">kt/yr</span></div></div>
+    <div class="kpi"><div class="l">Indicative payback</div><div class="v">${isFinite(d.payback)?d.payback.toFixed(1)+'y':'—'}</div></div>
+  </div>
+  <div class="kpis"><div class="kpi" style="grid-column:1/-1"><div class="l">Estimated CAPEX — indicative estimate, requires plant quotation</div><div class="v">₹${d.CAPEXtotal.toFixed(1)} crore</div></div></div>
+  <div class="sec-h">Intervention impact &amp; feasibility</div>`;
+  d.items.forEach(it=>{
+    h+=`<div class="card"><span class="flag ${it.flag}"></span><span><span class="name">${it.name}</span><br><span class="d">${it.detail}</span></span><span class="num">${inr(it.co2/1000)} ktCO₂/yr<br><span style="color:var(--ink-dim)">₹${it.capex.toFixed(1)}cr</span></span></div>`;
+  });
+  h+=`<div class="sec-h">Recommended first actions</div><ol class="rank">`;
+  d.ranked.forEach(it=>{
+    if(it.co2<=0 && it.flag==='red') return;
+    h+=`<li><div class="t">${it.name}<span class="tag ${it.flag}">${it.flag.toUpperCase()}</span></div><div class="s">Expected reduction: ${inr(it.co2/1000)} ktCO₂/yr · ${it.detail}</div></li>`;
+  });
+  h+=`</ol><p class="note"><b>How this works:</b> renewable electricity is applied first against baseline electricity emissions; efficiency savings are then calculated on the remaining (post-renewable) electricity blend to avoid double-counting; waste-heat recovery is deducted from baseline fuel emissions before fuel-switching savings are applied to what's left. Scrap, renewable and efficiency levels are automatically capped to plant/resource limits set in Admin settings. CAPEX and payback are indicative screening estimates from stored benchmarks, not plant quotations — use them for prioritization, not budgeting.</p>`;
+  document.getElementById('results').innerHTML=h;
+}
+</script>
+</body>
+</html>
